@@ -933,6 +933,14 @@
         <button id="settingsClose" aria-label="Close">&times;</button>
       </div>
 
+      <div class="opt-group" id="installGroup" style="display:none;">
+        <div class="opt-label">Install App</div>
+        <div class="btnrow">
+          <button class="minibtn" id="installBtn">&#11015;&#65039; Install DriverLink</button>
+        </div>
+        <p class="opt-hint">Puts DriverLink on your Home Screen like a regular app &mdash; no browser bar, opens straight to your tools, still works offline.</p>
+      </div>
+
       <div class="opt-group">
         <div class="opt-label">Driver Profile</div>
         <div class="namerow">
@@ -3087,6 +3095,49 @@
     mlink.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
     document.head.appendChild(mlink);
   } catch(e){}
+
+  // ---- in-app install prompt ----
+  // Chrome/Android won't let a site trigger its install dialog on its own —
+  // that's a deliberate browser restriction against sites spamming install
+  // popups. Instead the browser fires this event once, early, to say "this
+  // page qualifies as installable, and I'm holding the prompt for you to
+  // show whenever you want." We save it and reveal our own Install button in
+  // Settings so a driver has one obvious tap instead of hunting through the
+  // browser's ⋮ menu. Safari/iOS never fires this event at all — the tour
+  // step covers that path with the manual Share > Add to Home Screen steps.
+  var deferredInstallPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    var grp = document.getElementById('installGroup');
+    if (grp) grp.style.display = '';
+  });
+
+  document.getElementById('installBtn').addEventListener('click', function(){
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(function(){
+      // Whether they accepted or dismissed, this specific captured prompt
+      // can't be reused — Chrome will fire a fresh beforeinstallprompt
+      // later if it's still relevant, so just hide the button for now.
+      deferredInstallPrompt = null;
+      var grp = document.getElementById('installGroup');
+      if (grp) grp.style.display = 'none';
+    });
+  });
+
+  // If the browser tells us it's already installed (running standalone, or
+  // fires this event after a successful install), keep the button hidden —
+  // no point offering to install something that's already installed.
+  window.addEventListener('appinstalled', function(){
+    deferredInstallPrompt = null;
+    var grp = document.getElementById('installGroup');
+    if (grp) grp.style.display = 'none';
+  });
+  if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches){
+    var grp0 = document.getElementById('installGroup');
+    if (grp0) grp0.style.display = 'none';
+  }
 
   // ---- clock ----
   function pad(n){ return n < 10 ? '0' + n : '' + n; }
