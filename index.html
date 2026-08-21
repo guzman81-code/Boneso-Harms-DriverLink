@@ -1140,7 +1140,7 @@
     dvirDone:null,
     order:null,
     tourSeen:false,
-    hidden:{},
+    hidden:{tripticket:1},
     appBg:{},
     sentLog:[],
     lastSent:{},
@@ -3005,7 +3005,7 @@
   });
 
   document.getElementById('resetAll').addEventListener('click', function(){
-    state = { theme:'#1F3864', iconMode:'grey', appColors:{}, appIcons:{}, bgImage:null, bgOpacity:100, bgRemoved:false, bgOpacitySet:false, textScale:1, clockColor:null, firstName:'', lastName:'', dvirDone:null, order:null, tourSeen:false, hidden:{}, appBg:{}, sentLog:[], lastSent:{}, night:false };
+    state = { theme:'#1F3864', iconMode:'grey', appColors:{}, appIcons:{}, bgImage:null, bgOpacity:100, bgRemoved:false, bgOpacitySet:false, textScale:1, clockColor:null, firstName:'', lastName:'', dvirDone:null, order:null, tourSeen:false, hidden:{tripticket:1}, appBg:{}, sentLog:[], lastSent:{}, night:false };
     applyNightMode(false);
     try {
       localStorage.removeItem('bh_launcher_v1');
