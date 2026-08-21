@@ -27,6 +27,37 @@
     --stub-line:rgba(22,33,63,0.20);
     --tile-alpha:0.56;
     --tscale:1;
+    --tile-rgb:255,255,255;
+    --tile-highlight:rgba(255,255,255,0.7);
+    --card:#fff;
+    --card-alt:#F4F6FB;
+    --card-alt2:#F7F9FC;
+    --card-hover:#EAEFF8;
+    --hairline:#EDF0F5;
+    --switch-off:#C9D2E0;
+  }
+  /* ---------- Night mode ----------
+     Overrides the surface/text variables above for low-light driving.
+     Uses !important because Theme Color / Clock Color write --accent-text,
+     --clock and --clock-dim as inline styles on <html>, which would
+     otherwise outrank a plain class selector here. */
+  html.night{
+    --bg:#10182B !important;
+    --ink:#E7ECF6 !important;
+    --ink-dim:#A6B1C7 !important;
+    --accent-text:#E7ECF6 !important;
+    --clock:#E7ECF6 !important;
+    --clock-dim:#A6B1C7 !important;
+    --card-border:rgba(255,255,255,0.14) !important;
+    --stub-line:rgba(255,255,255,0.22) !important;
+    --tile-rgb:23,31,51 !important;
+    --tile-highlight:rgba(255,255,255,0.06) !important;
+    --card:#161F36 !important;
+    --card-alt:#1C2740 !important;
+    --card-alt2:#202B47 !important;
+    --card-hover:#26314F !important;
+    --hairline:rgba(255,255,255,0.10) !important;
+    --switch-off:#38415C !important;
   }
   *{box-sizing:border-box;}
   html,body{
@@ -95,7 +126,7 @@
     display:flex;flex-direction:column;align-items:center;
     margin-bottom:20px;position:relative;z-index:1;
   }
-  /* top status row: gear on the left, clock on the right */
+  /* top status row: clock only */
   header.hdr .statusrow{
     width:100%;display:flex;align-items:center;justify-content:flex-end;
     margin-bottom:10px;
@@ -163,17 +194,17 @@
   .tile{
     appearance:none;-webkit-appearance:none;
     border:1px solid var(--card-border);
-    background:rgba(255,255,255,var(--tile-alpha));
+    background:rgba(var(--tile-rgb),var(--tile-alpha));
     -webkit-backdrop-filter:blur(10px) saturate(140%);
     backdrop-filter:blur(10px) saturate(140%);
     border-radius:16px;padding:0;color:inherit;font:inherit;text-align:left;
     cursor:pointer;overflow:hidden;display:flex;flex-direction:column;
-    box-shadow:0 10px 22px -16px rgba(22,33,63,0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+    box-shadow:0 10px 22px -16px rgba(22,33,63,0.35), inset 0 1px 0 var(--tile-highlight);
     transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
   }
   .tile:active{transform:scale(0.97);}
   .tile:hover{
-    background:rgba(255,255,255,calc(var(--tile-alpha) + 0.18));
+    background:rgba(var(--tile-rgb),calc(var(--tile-alpha) + 0.18));
     border-color:rgba(var(--accent-rgb),0.35);
   }
   .tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
@@ -369,7 +400,7 @@
   }
   #clearBackdrop.active{display:flex;}
   #clearBox{
-    width:100%;max-width:330px;background:#fff;border-radius:16px;
+    width:100%;max-width:330px;background:var(--card);border-radius:16px;
     padding:20px 20px 16px;text-align:center;
     box-shadow:0 18px 40px -14px rgba(0,0,0,.5);
   }
@@ -402,7 +433,7 @@
   #sentLog{max-height:190px;overflow-y:auto;}
   .logrow{
     display:flex;justify-content:space-between;align-items:baseline;gap:10px;
-    padding:8px 0;border-bottom:1px solid #EDF0F5;
+    padding:8px 0;border-bottom:1px solid var(--hairline);
   }
   .logrow:last-child{border-bottom:none;}
   .logrow .lname{font-size:13px;font-weight:700;color:var(--ink);}
@@ -415,13 +446,13 @@
   /* ---------- Show / hide tools ---------- */
   .visrow{
     display:flex;align-items:center;gap:11px;padding:10px 0;
-    border-bottom:1px solid #EDF0F5;
+    border-bottom:1px solid var(--hairline);
   }
   .visrow:last-child{border-bottom:none;}
   .visrow .vname{flex:1;font-size:13.5px;font-weight:700;color:var(--ink);}
   .switch{
     position:relative;width:48px;height:28px;flex:0 0 48px;
-    border:none;border-radius:999px;background:#C9D2E0;cursor:pointer;padding:0;
+    border:none;border-radius:999px;background:var(--switch-off);cursor:pointer;padding:0;
     transition:background .15s ease;
   }
   .switch::after{
@@ -440,7 +471,7 @@
   }
   #tourBackdrop.active{display:flex;}
   #tourBox{
-    width:100%;max-width:340px;background:#fff;border-radius:18px;
+    width:100%;max-width:340px;background:var(--card);border-radius:18px;
     padding:24px 22px 18px;text-align:center;
     box-shadow:0 20px 44px -14px rgba(0,0,0,.55);
     /* Never let a tall step push Skip/Next past the bottom of the screen:
@@ -511,7 +542,7 @@
        being transformed is what made the icon flicker/tear while dragging
        on mobile — swap to a plain opaque fill for the duration of the drag. */
     backdrop-filter:none;-webkit-backdrop-filter:none;
-    background:rgba(255,255,255,0.97);
+    background:rgba(var(--tile-rgb),0.97);
   }
   /* Holds the dragged tile's grid slot open while the tile itself is
      lifted out of flow (position:fixed above) and follows the pointer
@@ -544,7 +575,7 @@
   }
   #exitBackdrop.active{display:flex;}
   #exitBox{
-    width:100%;max-width:330px;background:#fff;border-radius:16px;
+    width:100%;max-width:330px;background:var(--card);border-radius:16px;
     padding:20px 20px 16px;text-align:center;
     box-shadow:0 18px 40px -14px rgba(0,0,0,.5);
   }
@@ -561,7 +592,7 @@
   }
   #settingsBackdrop.active{display:flex;}
   #settingsSheet{
-    width:100%;max-width:440px;background:#fff;
+    width:100%;max-width:440px;background:var(--card);
     border-radius:20px 20px 0 0;
     padding:16px 20px max(18px, env(safe-area-inset-bottom));
     max-height:88vh;overflow-y:auto;
@@ -573,7 +604,7 @@
   }
   .sheet-head{
     display:flex;align-items:center;justify-content:space-between;
-    margin:0 0 14px;position:sticky;top:0;background:#fff;padding:4px 0 10px;z-index:2;
+    margin:0 0 14px;position:sticky;top:0;background:var(--card);padding:4px 0 10px;z-index:2;
   }
   .sheet-head h2{margin:0;font-size:17px;color:var(--ink);}
   #settingsClose{
@@ -592,7 +623,7 @@
 
   .seg{display:flex;border:1px solid var(--card-border);border-radius:10px;overflow:hidden;}
   .seg-btn{
-    flex:1;border:none;background:#F4F6FB;padding:10px 6px;
+    flex:1;border:none;background:var(--card-alt);padding:10px 6px;
     font:700 12.5px Arial, Helvetica, sans-serif;color:var(--ink-dim);cursor:pointer;
   }
   .seg-btn.active{background:var(--accent);color:#fff;}
@@ -601,7 +632,7 @@
   .swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
   .swatch{
     width:100%;aspect-ratio:1;border-radius:50%;
-    border:2px solid #fff;outline:1px solid var(--card-border);
+    border:2px solid var(--card);outline:1px solid var(--card-border);
     background:var(--sw);cursor:pointer;padding:0;position:relative;
   }
   .swatch.active::after{
@@ -615,17 +646,17 @@
     flex:1;min-width:0;
     border:1px solid var(--card-border);border-radius:9px;
     padding:11px 12px;font:600 14px Arial, Helvetica, sans-serif;
-    color:var(--ink);background:#F7F9FC;
+    color:var(--ink);background:var(--card-alt2);
   }
-  .namerow input:focus{outline:2px solid var(--accent);outline-offset:-1px;background:#fff;}
+  .namerow input:focus{outline:2px solid var(--accent);outline-offset:-1px;background:var(--card);}
 
   .btnrow{display:flex;gap:9px;flex-wrap:wrap;}
   .minibtn{
-    border:1px solid var(--card-border);background:#F4F6FB;border-radius:9px;
+    border:1px solid var(--card-border);background:var(--card-alt);border-radius:9px;
     padding:9px 13px;font:700 12.5px Arial, Helvetica, sans-serif;
     color:var(--ink);cursor:pointer;
   }
-  .minibtn:hover{background:#EAEFF8;}
+  .minibtn:hover{background:var(--card-hover);}
   .minibtn.danger{color:var(--ink-dim);}
   .minibtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
@@ -639,12 +670,12 @@
   /* per-app rows */
   .approw{
     display:flex;align-items:center;gap:11px;padding:10px 0;
-    border-bottom:1px solid #EDF0F5;
+    border-bottom:1px solid var(--hairline);
   }
   .approw:last-child{border-bottom:none;}
   .approw .prev{
     width:38px;height:38px;flex:0 0 38px;border-radius:9px;
-    border:1px solid var(--card-border);background:#F7F9FC;
+    border:1px solid var(--card-border);background:var(--card-alt2);
     display:flex;align-items:center;justify-content:center;overflow:hidden;
   }
   .approw .prev svg{width:22px;height:22px;}
@@ -655,10 +686,10 @@
     border-radius:8px;background:none;cursor:pointer;flex:0 0 34px;
   }
   .approw .tinybtn{
-    border:1px solid var(--card-border);background:#F4F6FB;border-radius:8px;
+    border:1px solid var(--card-border);background:var(--card-alt);border-radius:8px;
     padding:7px 9px;font:700 11px Arial, Helvetica, sans-serif;color:var(--ink);cursor:pointer;
   }
-  .approw .tinybtn:hover{background:#EAEFF8;}
+  .approw .tinybtn:hover{background:var(--card-hover);}
 </style>
 </head>
 <body>
@@ -996,6 +1027,15 @@
       </div>
 
       <div class="opt-group">
+        <div class="opt-label">Appearance</div>
+        <div class="seg" id="nightModeSeg">
+          <button class="seg-btn" data-mode="day">Day</button>
+          <button class="seg-btn" data-mode="night">Night</button>
+        </div>
+        <p class="opt-hint">Night dims the screen for low light. This affects the home screen and this Settings panel &mdash; the individual tools open with their own fixed screen.</p>
+      </div>
+
+      <div class="opt-group">
         <div class="opt-label">Background Picture</div>
         <div class="btnrow">
           <button class="minibtn" id="bgUploadBtn">Choose Picture</button>
@@ -1011,13 +1051,6 @@
         </div>
       </div>
 
-      <div class="opt-group">
-        <div class="opt-label">Apps &mdash; Custom Icon Picture</div>
-        <div id="appRows"></div>
-        <input type="file" id="iconFile" accept="image/*" style="display:none">
-        <input type="file" id="tileBgFile" accept="image/*" style="display:none">
-        <p class="opt-hint"><b>Icon</b> replaces the small symbol. <b>Photo</b> sets a background picture for that tile. Tap again with the &#10005; to remove.</p>
-      </div>
 
       <div class="opt-group">
         <div class="btnrow">
@@ -1110,7 +1143,8 @@
     hidden:{},
     appBg:{},
     sentLog:[],
-    lastSent:{}
+    lastSent:{},
+    night:false
   };
 
   function saveState(){
@@ -1227,6 +1261,16 @@
       b.classList.toggle('active', !!hex && b.getAttribute('data-hex').toLowerCase() === hex.toLowerCase());
     });
 
+  }
+
+  function applyNightMode(on){
+    state.night = !!on;
+    document.documentElement.classList.toggle('night', state.night);
+    document.querySelectorAll('#nightModeSeg .seg-btn').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-mode') === (state.night ? 'night' : 'day'));
+    });
+    var meta = document.querySelector('meta[name=theme-color]');
+    if (meta) meta.setAttribute('content', state.night ? '#10182B' : state.theme);
   }
 
   function applyTextScale(v){
@@ -2910,6 +2954,11 @@
     if (b){ applyIconMode(b.getAttribute('data-mode')); saveState(); }
   });
 
+  document.getElementById('nightModeSeg').addEventListener('click', function(e){
+    var b = e.target.closest('.seg-btn');
+    if (b){ applyNightMode(b.getAttribute('data-mode') === 'night'); saveState(); }
+  });
+
   ['firstName','lastName'].forEach(function(id){
     var el = document.getElementById(id);
     el.addEventListener('input', function(){
@@ -2948,36 +2997,6 @@
     saveState();
   });
 
-  document.getElementById('iconFile').addEventListener('change', function(){
-    var f = this.files && this.files[0];
-    if (!f || !pendingIconApp) return;
-    var target = pendingIconApp;
-    readScaledImage(f, 192, function(dataUrl){
-      if (!dataUrl) return;
-      state.appIcons[target] = dataUrl;
-      applyIcons();
-      saveState();
-    });
-    pendingIconApp = null;
-    this.value = '';
-  });
-
-  document.getElementById('tileBgFile').addEventListener('change', function(){
-    var f = this.files && this.files[0];
-    if (!f || !pendingBgApp) return;
-    var target = pendingBgApp;
-    readScaledImage(f, 700, function(dataUrl){
-      if (!dataUrl) return;
-      if (!state.appBg) state.appBg = {};
-      state.appBg[target] = dataUrl;
-      applyTileBackgrounds();
-      renderAppRows();
-      saveState();
-    });
-    pendingBgApp = null;
-    this.value = '';
-  });
-
   document.getElementById('bgOpacity').addEventListener('input', function(){
     state.bgOpacity = parseInt(this.value, 10);
     state.bgOpacitySet = true;
@@ -2986,7 +3005,8 @@
   });
 
   document.getElementById('resetAll').addEventListener('click', function(){
-    state = { theme:'#1F3864', iconMode:'grey', appColors:{}, appIcons:{}, bgImage:null, bgOpacity:100, bgRemoved:false, bgOpacitySet:false, textScale:1, clockColor:null, firstName:'', lastName:'', dvirDone:null, order:null, tourSeen:false, hidden:{}, appBg:{}, sentLog:[], lastSent:{} };
+    state = { theme:'#1F3864', iconMode:'grey', appColors:{}, appIcons:{}, bgImage:null, bgOpacity:100, bgRemoved:false, bgOpacitySet:false, textScale:1, clockColor:null, firstName:'', lastName:'', dvirDone:null, order:null, tourSeen:false, hidden:{}, appBg:{}, sentLog:[], lastSent:{}, night:false };
+    applyNightMode(false);
     try {
       localStorage.removeItem('bh_launcher_v1');
       // each of these tools keeps its own independent draft/progress data,
@@ -3157,6 +3177,7 @@
   loadState();
   buildSwatches();
   applyTheme(state.theme);
+  applyNightMode(state.night);
   applyIconMode(state.iconMode);
   // Text size is fixed at Normal now — no in-app control for it anymore.
   // Force it here too, so a driver who saved a Large/Larger/Biggest value
